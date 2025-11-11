@@ -1,0 +1,218 @@
+#Assignment 1
+def fibonacci (n):
+    if(n<=1):
+        return n
+    else:
+        return (fibonacci(n-1)+fibonacci(n-2))
+n=int(input("Enter number of terms:"))
+print("fibonacci series:")
+for i in range(n):
+    print(fibonacci(i))
+
+# Assignment 2
+# Define Node class
+class Node:
+    def _init_(self, freq, symbol, left=None, right=None):
+        self.freq = freq
+        self.symbol = symbol
+        self.left = left
+        self.right = right
+        self.huff = ''  # Huffman code (0 or 1 for each branch)
+
+# Recursive function to print the Huffman codes
+def printNodes(node, val=""):
+    newVal = val + str(node.huff)
+    if node.left:
+        printNodes(node.left, newVal)
+    if node.right:
+        printNodes(node.right, newVal)
+    if not node.left and not node.right:
+        print(f"{node.symbol} -> {newVal}")
+
+# Input data
+chars = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+freq = [4, 7, 12, 14, 17, 43, 54]
+
+# Create initial nodes
+nodes = []
+for i in range(len(chars)):
+    nodes.append(Node(freq[i], chars[i]))
+
+# Build the Huffman Tree
+while len(nodes) > 1:
+    # Sort nodes based on frequency
+    nodes = sorted(nodes, key=lambda x: x.freq)
+    
+    # Pick two smallest nodes
+    left = nodes[0]
+    right = nodes[1]
+    
+    # Assign binary codes
+    left.huff = 0
+    right.huff = 1
+    
+    # Create new combined node
+    newNode = Node(left.freq + right.freq, left.symbol + right.symbol, left, right)
+    
+    # Remove used nodes and add new one
+    nodes.remove(left)
+    nodes.remove(right)
+    nodes.append(newNode)
+
+# Print Huffman Codes
+printNodes(nodes[0])
+
+
+#Assignment 3
+def fractional_knapsack(value, weight, capacity):
+    # index = [0, 1, 2, ..., n - 1] for n items
+    index = list(range(len(value)))
+
+    # contains ratios of values to weights
+    ratio = [v / w for v, w in zip(value, weight)]
+
+    # index is sorted according to value-to-weight ratio in decreasing order
+    index.sort(key=lambda i: ratio[i], reverse=True)
+
+    max_value = 0
+    fractions = [0] * len(value)
+
+    for i in index:
+        if weight[i] <= capacity:
+            # take the whole item
+            fractions[i] = 1
+            max_value += value[i]
+            capacity -= weight[i]
+        else:
+            # take a fraction of the remaining item
+            fractions[i] = capacity / weight[i]
+            max_value += value[i] * capacity / weight[i]
+            break
+
+    return max_value, fractions
+
+
+# Main code
+n = int(input('Enter number of items: '))
+
+value = input(f'Enter the values of the {n} item(s) in order: ').split()
+value = [int(v) for v in value]
+
+weight = input(f'Enter the positive weights of the {n} item(s) in order: ').split()
+weight = [int(w) for w in weight]
+
+capacity = int(input('Enter maximum weight: '))
+
+max_value, fractions = fractional_knapsack(value, weight, capacity)
+
+print('The maximum value of items that can be carried:', max_value)
+print('The fractions in which the items should be taken:', fractions)
+
+#Assignment 4
+# Python program to solve N Queen Problem using backtracking
+
+N = 4  # You can change this value for different board sizes
+
+# A utility function to print the solution
+def printSolution(board):
+    for i in range(N):
+        for j in range(N):
+            print(board[i][j], end=" ")
+        print()
+    print()  # Blank line after solution
+
+
+# A utility function to check if a queen can be placed on board[row][col]
+def isSafe(board, row, col):
+    # Check this row on the left side
+    for i in range(col):
+        if board[row][i] == 1:
+            return False
+
+    # Check upper diagonal on the left side
+    i, j = row, col
+    while i >= 0 and j >= 0:
+        if board[i][j] == 1:
+            return False
+        i -= 1
+        j -= 1
+
+    # Check lower diagonal on the left side
+    i, j = row, col
+    while j >= 0 and i < N:
+        if board[i][j] == 1:
+            return False
+        i += 1
+        j -= 1
+
+    return True
+
+
+# A recursive utility function to solve N Queen problem
+def solveNQUtil(board, col):
+    # Base case: If all queens are placed, return True
+    if col >= N:
+        return True
+
+    # Try placing this queen in all rows one by one
+    for i in range(N):
+        if isSafe(board, i, col):
+            # Place this queen in board[i][col]
+            board[i][col] = 1
+
+            # Recur to place rest of the queens
+            if solveNQUtil(board, col + 1):
+                return True
+
+            # If placing queen in board[i][col] doesn't lead to a solution, backtrack
+            board[i][col] = 0
+
+    # If the queen cannot be placed in any row in this column col, return False
+    return False
+
+
+# This function solves the N Queen problem using backtracking.
+def solveNQ():
+    board = [[0 for _ in range(N)] for _ in range(N)]
+
+    if not solveNQUtil(board, 0):
+        print("Solution does not exist")
+        return False
+
+    printSolution(board)
+    return True
+
+
+# Driver code
+if _name_ == "_main_":
+    solveNQ()
+
+
+#ML Assignment 2
+ML 2
+
+# Gradient Descent to find local minima of y = (x + 3)^2
+
+# Step 1: Initialize parameters
+cur_x = 2                # Starting point (given in question)
+rate = 0.01              # Learning rate
+precision = 0.000001     # Stop condition
+previous_step_size = 1   # Step size initialization
+max_iters = 10000        # Maximum iterations
+iters = 0                # Iteration counter
+
+# Step 2: Define derivative (gradient) of the function
+df = lambda x: 2 * (x + 3)
+
+# Step 3: Gradient Descent loop
+while previous_step_size > precision and iters < max_iters:
+    prev_x = cur_x
+    cur_x = cur_x - rate * df(prev_x)   # Move against gradient
+    previous_step_size = abs(cur_x - prev_x)
+    iters += 1
+
+    if iters % 50 == 0:  # Print every 50 iterations
+        print(f"Iteration {iters}: X = {cur_x:.6f}")
+
+# Step 4: Print the result
+print("\nThe local minimum occurs at x =", round(cur_x, 5))
